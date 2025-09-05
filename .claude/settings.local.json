@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:osvaldoaranha.com)"
-    ],
-    "deny": [],
-    "ask": []
-  }
-}
