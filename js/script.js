@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeVideoEffects();
     initializeGalleryEffects();
     initializeSmoothScrolling();
-    initializePerformanceOptimizations();
+    initializeBackToTopButton();
     
     // ===== INICIALIZAR AOS (ANIMATE ON SCROLL) =====
+    // Inicializa a biblioteca de animação ao rolar a página
     function initializeAOS() {
         AOS.init({
             duration: 1000,
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== CANVAS ANIMADO DE FUNDO =====
+    // Cria um fundo animado com partículas
     function initializeBackgroundCanvas() {
         const canvas = document.getElementById('backgroundCanvas');
         if (!canvas) return;
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             canvas.height = window.innerHeight;
         }
         
-        // Partículas animadas
+        // Classe para as partículas animadas
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -54,10 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             getRandomColor() {
                 const colors = [
-                    'rgba(139, 92, 246, 0.6)',  // purple
-                    'rgba(245, 158, 11, 0.6)',  // gold
-                    'rgba(236, 72, 153, 0.6)',  // pink
-                    'rgba(6, 182, 212, 0.6)'    // cyan
+                    'rgba(139, 92, 246, 0.6)',  // Roxo
+                    'rgba(245, 158, 11, 0.6)',  // Dourado
+                    'rgba(236, 72, 153, 0.6)',  // Rosa
+                    'rgba(6, 182, 212, 0.6)'    // Ciano
                 ];
                 return colors[Math.floor(Math.random() * colors.length)];
             }
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Gerenciar partículas
+        // Gerencia as partículas
         let particles = [];
         const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 15000));
         
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Conectar partículas próximas
+        // Conecta as partículas próximas com linhas
         function connectParticles() {
             const maxDistance = 120;
             
@@ -144,18 +146,17 @@ document.addEventListener('DOMContentLoaded', function() {
             animationId = requestAnimationFrame(animate);
         }
         
-        // Inicializar
+        // Inicialização
         resizeCanvas();
         createParticles();
         animate();
         
-        // Event listeners
+        // Event listeners para redimensionar e pausar a animação
         window.addEventListener('resize', () => {
             resizeCanvas();
             createParticles();
         });
         
-        // Pausar quando não está visível
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 cancelAnimationFrame(animationId);
@@ -166,43 +167,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== EFEITOS DE SCROLL AVANÇADOS =====
+    // Adiciona efeitos visuais durante a rolagem da página
     function initializeScrollEffects() {
         const header = document.querySelector('.header');
-        let lastScrollY = window.pageYOffset;
         let ticking = false;
         
         function updateScrollEffects() {
             const scrollY = window.pageYOffset;
             
-            // Header scroll effect
+            // Efeito de encolhimento do header
             if (scrollY > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
             
-            // Parallax para elementos específicos
-            const parallaxElements = document.querySelectorAll('.hero-image-glow, .hero-video-bg');
-            parallaxElements.forEach((element, index) => {
-                const speed = 0.3 + (index * 0.1);
+            // Efeito de parallax para elementos específicos
+            const parallaxElements = document.querySelectorAll('.hero-video-bg');
+            parallaxElements.forEach(element => {
+                const speed = 0.3;
                 const yPos = scrollY * speed;
                 element.style.transform = `translateY(${yPos}px)`;
             });
             
-            // Efeito de profundidade nas seções
-            const sections = document.querySelectorAll('section');
-            sections.forEach((section, index) => {
-                const rect = section.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                
-                if (isVisible) {
-                    const scrollPercent = (window.innerHeight - rect.top) / window.innerHeight;
-                    const transform = Math.max(0, (1 - scrollPercent) * 30);
-                    section.style.transform = `translateY(${transform}px)`;
-                }
-            });
-            
-            lastScrollY = scrollY;
             ticking = false;
         }
         
@@ -217,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== MENU MOBILE INTERATIVO =====
+    // Controla a exibição e o comportamento do menu em dispositivos móveis
     function initializeMobileMenu() {
         const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
         const navList = document.querySelector('.nav-list');
@@ -225,12 +213,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!mobileMenuIcon || !navList) return;
         
         mobileMenuIcon.addEventListener('click', () => {
-            navList.classList.toggle('active');
-            mobileMenuIcon.classList.toggle('active');
+            // Alterna a classe 'active' para mostrar/esconder o menu
+            const isActive = navList.classList.toggle('active');
+            mobileMenuIcon.classList.toggle('active', isActive);
             
-            // Animar barras do menu
+            // Animação do ícone do menu (hambúrguer para X)
             const bars = mobileMenuIcon.querySelectorAll('.bar');
-            if (mobileMenuIcon.classList.contains('active')) {
+            if (isActive) {
                 bars[0].style.transform = 'translateY(7px) rotate(45deg)';
                 bars[1].style.opacity = '0';
                 bars[2].style.transform = 'translateY(-7px) rotate(-45deg)';
@@ -241,552 +230,271 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Fechar menu ao clicar em links
+        // Fecha o menu ao clicar em um link
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                navList.classList.remove('active');
-                mobileMenuIcon.classList.remove('active');
-                
-                const bars = mobileMenuIcon.querySelectorAll('.bar');
-                bars.forEach(bar => {
-                    bar.style.transform = '';
-                    bar.style.opacity = '';
-                });
+                if (navList.classList.contains('active')) {
+                    navList.classList.remove('active');
+                    mobileMenuIcon.classList.remove('active');
+                    const bars = mobileMenuIcon.querySelectorAll('.bar');
+                    bars.forEach(bar => {
+                        bar.style.transform = '';
+                        bar.style.opacity = '';
+                    });
+                }
             });
         });
     }
 
     // ===== EFEITOS DE VÍDEO PREMIUM =====
+    // Controla a reprodução e otimização do vídeo de fundo
     function initializeVideoEffects() {
         const video = document.querySelector('.hero-video-bg');
         if (!video) return;
         
-        // Lazy loading do vídeo
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    video.play().catch(e => console.log('Autoplay prevented:', e));
-                    observer.unobserve(video);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        observer.observe(video);
-        
-        // Pause/play baseado na visibilidade
+        // Pausar/reproduzir com base na visibilidade da aba
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 video.pause();
             } else {
-                video.play().catch(e => console.log('Play prevented:', e));
+                video.play().catch(e => console.log('Autoplay do vídeo foi impedido pelo navegador.'));
             }
         });
-        
-        // Controle de qualidade baseado na performance
-        let fps = 60;
-        let lastTime = performance.now();
-        
-        function checkPerformance() {
-            const now = performance.now();
-            fps = 1000 / (now - lastTime);
-            lastTime = now;
-            
-            if (fps < 30) {
-                video.style.filter = 'blur(1px)';
-            } else {
-                video.style.filter = '';
-            }
-            
-            requestAnimationFrame(checkPerformance);
-        }
-        
-        checkPerformance();
     }
 
     // ===== GALERIA INTERATIVA =====
+    // Adiciona efeitos 3D e modal de visualização na galeria
     function initializeGalleryEffects() {
         const galleryItems = document.querySelectorAll('.gallery-item');
         
-        galleryItems.forEach((item, index) => {
-            // Efeito de mouse move 3D
+        galleryItems.forEach(item => {
+            // Efeito 3D ao mover o mouse
             item.addEventListener('mousemove', (e) => {
                 const rect = item.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-                const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+                const x = ((e.clientX - rect.left) / rect.width - 0.5) * 15; // Reduzido para um efeito mais sutil
+                const y = ((e.clientY - rect.top) / rect.height - 0.5) * -15; // Reduzido e invertido
                 
-                item.style.transform = `perspective(1000px) rotateX(${y}deg) rotateY(${x}deg) scale(1.05)`;
+                item.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${y}deg) scale(1.05)`;
             });
             
             item.addEventListener('mouseleave', () => {
-                item.style.transform = '';
+                item.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) scale(1)';
             });
             
-            // Click para expandir (modal simples)
+            // Abrir imagem em um modal ao clicar
             item.addEventListener('click', () => {
                 createImageModal(item.querySelector('img'));
             });
         });
     }
     
-    // Modal de imagem
+    // Cria e gerencia o modal de visualização de imagem
     function createImageModal(img) {
         const modal = document.createElement('div');
         modal.className = 'image-modal';
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(20px);
-        `;
+        
+        const modalContent = document.createElement('div');
+        modalContent.className = 'image-modal-content';
         
         const modalImg = document.createElement('img');
         modalImg.src = img.src;
         modalImg.alt = img.alt;
-        modalImg.style.cssText = `
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 15px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        `;
         
         const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '×';
-        closeBtn.style.cssText = `
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            font-size: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            backdrop-filter: blur(20px);
-        `;
+        closeBtn.innerHTML = '&times;';
+        closeBtn.className = 'image-modal-close';
+        closeBtn.setAttribute('aria-label', 'Fechar imagem');
         
-        modal.appendChild(modalImg);
+        modalContent.appendChild(modalImg);
+        modal.appendChild(modalContent);
         modal.appendChild(closeBtn);
         document.body.appendChild(modal);
         
-        // Animar entrada
-        requestAnimationFrame(() => {
-            modal.style.opacity = '1';
-            modalImg.style.transform = 'scale(1)';
-        });
+        // Anima a entrada do modal
+        setTimeout(() => modal.classList.add('visible'), 10);
         
-        // Event listeners
+        // Funções para fechar o modal
         const closeModal = () => {
-            modal.style.opacity = '0';
-            modalImg.style.transform = 'scale(0.8)';
+            modal.classList.remove('visible');
             setTimeout(() => modal.remove(), 300);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+        
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') closeModal();
         };
         
         closeBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
+        document.addEventListener('keydown', onKeyDown);
     }
 
-    // ===== SMOOTH SCROLLING AVANÇADO =====
+    // ===== SMOOTH SCROLLING (ROLAGEM SUAVE) =====
+    // Cria uma rolagem suave para links de âncora
     function initializeSmoothScrolling() {
         const links = document.querySelectorAll('a[href^="#"]');
         
         links.forEach(link => {
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', function(e) {
                 e.preventDefault();
+                const targetId = this.getAttribute('href');
                 
-                const targetId = link.getAttribute('href');
+                // Ignora o botão de voltar ao topo que já tem seu próprio tratamento
+                if (this.classList.contains('back-to-top')) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+
                 const targetSection = document.querySelector(targetId);
-                
                 if (targetSection) {
                     const headerHeight = document.querySelector('.header').offsetHeight;
-                    const targetPosition = targetSection.offsetTop - headerHeight - 20;
+                    const targetPosition = targetSection.offsetTop - headerHeight;
                     
-                    // Smooth scroll com easing customizado
-                    scrollToTarget(targetPosition, 1000);
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
     }
-    
-    function scrollToTarget(target, duration) {
-        const start = window.pageYOffset;
-        const distance = target - start;
-        const startTime = performance.now();
-        
-        function animation(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            // Easing function (ease-out-cubic)
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-            
-            window.scrollTo(0, start + (distance * easeProgress));
-            
-            if (progress < 1) {
-                requestAnimationFrame(animation);
-            }
-        }
-        
-        requestAnimationFrame(animation);
-    }
 
-    // ===== OTIMIZAÇÕES DE PERFORMANCE =====
-    function initializePerformanceOptimizations() {
-        // Lazy loading de imagens
-        const images = document.querySelectorAll('img[data-src]');
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.add('loaded');
-                    imageObserver.unobserve(img);
-                }
-            });
-        }, { rootMargin: '50px' });
-        
-        images.forEach(img => imageObserver.observe(img));
-        
-        // Preload de recursos críticos
-        preloadCriticalResources();
-        
-        // Otimização de scroll
-        let isScrolling = false;
+    // ===== BOTÃO VOLTAR AO TOPO =====
+    // Controla a visibilidade do botão de voltar ao topo
+    function initializeBackToTopButton() {
+        const backToTopButton = document.querySelector('.back-to-top');
+        if (!backToTopButton) return;
+
         window.addEventListener('scroll', () => {
-            if (!isScrolling) {
-                window.requestAnimationFrame(() => {
-                    // Scroll optimizations aqui
-                    isScrolling = false;
-                });
-                isScrolling = true;
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
             }
         }, { passive: true });
     }
     
-    function preloadCriticalResources() {
-        // Preload de imagens críticas
-        const criticalImages = [
-            'img/Cristiane-01.png',
-            'img/Logo EBEM-Roxo.png'
-        ];
-        
-        criticalImages.forEach(src => {
-            const link = document.createElement('link');
-            link.rel = 'preload';
-            link.as = 'image';
-            link.href = src;
-            document.head.appendChild(link);
-        });
-    }
-
-    // ===== INTERAÇÕES AVANÇADAS =====
-    
-    // Animação de contador para estatísticas
+    // ===== ANIMAÇÃO DOS CONTADORES =====
+    // Anima os números da seção de estatísticas
     function animateCounters() {
         const counters = document.querySelectorAll('.stat-number');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const counter = entry.target;
-                    const target = parseInt(counter.textContent);
-                    const duration = 2000;
-                    const start = performance.now();
+                    const targetText = counter.textContent.replace(/[^0-9]/g, '');
+                    const target = parseInt(targetText, 10);
                     
-                    function updateCounter(currentTime) {
-                        const elapsed = currentTime - start;
-                        const progress = Math.min(elapsed / duration, 1);
-                        const current = Math.floor(progress * target);
-                        
-                        counter.textContent = current + '+';
-                        
-                        if (progress < 1) {
+                    if (isNaN(target)) return;
+
+                    let current = 0;
+                    const increment = target / 100; // Controla a velocidade da animação
+                    
+                    const updateCounter = () => {
+                        if (current < target) {
+                            current += increment;
+                            counter.textContent = Math.ceil(current) + 'anos+'; // Adiciona o sufixo
                             requestAnimationFrame(updateCounter);
                         } else {
-                            counter.textContent = target + '+';
+                            counter.textContent = target + 'anos+';
                         }
-                    }
+                    };
                     
-                    requestAnimationFrame(updateCounter);
+                    updateCounter();
                     observer.unobserve(counter);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.8 });
         
         counters.forEach(counter => observer.observe(counter));
     }
     
-    // Inicializar contadores
+    // Inicializa os contadores
     animateCounters();
     
-    // Efeitos de hover avançados para cards
-    const cards = document.querySelectorAll('.expertise-card, .event-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-10px) scale(1.02)';
-            card.style.boxShadow = '0 20px 60px rgba(139, 92, 246, 0.4)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-            card.style.boxShadow = '';
-        });
-    });
-    
-    // Animação de texto typewriter para títulos especiais
-    function typewriterEffect(element, text, speed = 100) {
-        element.textContent = '';
-        let i = 0;
-        
-        function type() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, speed);
-            }
-        }
-        
-        type();
-    }
-    
-    // Aplicar efeito typewriter em elementos específicos quando visíveis
-    const typewriterElements = document.querySelectorAll('[data-typewriter]');
-    const typewriterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                const text = element.dataset.typewriter || element.textContent;
-                typewriterEffect(element, text);
-                typewriterObserver.unobserve(element);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    typewriterElements.forEach(el => typewriterObserver.observe(el));
-    
-    // ===== LOADING SCREEN =====
-    function initializeLoadingScreen() {
-        const loadingScreen = document.createElement('div');
-        loadingScreen.className = 'loading-screen';
-        loadingScreen.innerHTML = `
-            <div class="loading-content">
-                <div class="loading-logo">
-                    <img src="img/Logo EBEM-Roxo.png" alt="EBEM">
-                </div>
-                <div class="loading-bar">
-                    <div class="loading-progress"></div>
-                </div>
-                <p>Carregando experiência premium...</p>
-            </div>
-        `;
-        
-        loadingScreen.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0A0A0A 0%, #8B5CF6 50%, #EC4899 100%);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            transition: opacity 0.5s ease;
-        `;
-        
-        document.body.appendChild(loadingScreen);
-        
-        // Simular carregamento
-        const progress = loadingScreen.querySelector('.loading-progress');
-        let width = 0;
-        
-        const loading = setInterval(() => {
-            width += Math.random() * 10;
-            progress.style.width = Math.min(width, 100) + '%';
-            
-            if (width >= 100) {
-                clearInterval(loading);
-                setTimeout(() => {
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => loadingScreen.remove(), 500);
-                }, 500);
-            }
-        }, 100);
-    }
-    
-    // Inicializar loading apenas na primeira visita
-    if (sessionStorage.getItem('visited') !== 'true') {
-        initializeLoadingScreen();
-        sessionStorage.setItem('visited', 'true');
-    }
-    
-    // ===== EASTER EGGS E DETALHES ESPECIAIS =====
-    
-    // Konami code para modo especial
-    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-    let konamiIndex = 0;
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.keyCode === konamiCode[konamiIndex]) {
-            konamiIndex++;
-            if (konamiIndex === konamiCode.length) {
-                activateSpecialMode();
-                konamiIndex = 0;
-            }
-        } else {
-            konamiIndex = 0;
-        }
-    });
-    
-    function activateSpecialMode() {
-        document.body.classList.add('special-mode');
-        
-        // Adicionar efeitos especiais
-        const style = document.createElement('style');
-        style.textContent = `
-            .special-mode .hero-image {
-                animation: rainbow-glow 2s infinite;
-            }
-            
-            @keyframes rainbow-glow {
-                0% { filter: hue-rotate(0deg) brightness(1.2); }
-                25% { filter: hue-rotate(90deg) brightness(1.2); }
-                50% { filter: hue-rotate(180deg) brightness(1.2); }
-                75% { filter: hue-rotate(270deg) brightness(1.2); }
-                100% { filter: hue-rotate(360deg) brightness(1.2); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Mostrar mensagem especial
-        const message = document.createElement('div');
-        message.textContent = '✨ Modo especial ativado! ✨';
-        message.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #8B5CF6, #EC4899);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
-        `;
-        
-        document.body.appendChild(message);
-        
-        setTimeout(() => {
-            message.style.opacity = '0';
-            setTimeout(() => message.remove(), 300);
-        }, 3000);
-    }
-    
-    // Log de desenvolvedor
-    console.log('%c🚀 Site Cristiane Lidório - Especialista em IA', 
-        'color: #8B5CF6; font-size: 20px; font-weight: bold;');
-    console.log('%c⚡ Desenvolvido com tecnologias premium', 
-        'color: #F59E0B; font-size: 14px;');
-    console.log('%c💜 EBEM - Escola Brasileira de Empreendedorismo Feminino', 
-        'color: #EC4899; font-size: 12px;');
-        
     // ===== FINALIZAÇÃO =====
-    
-    // Marcar página como totalmente carregada
+    // Adiciona a classe 'loaded' ao corpo quando a página estiver totalmente carregada
     window.addEventListener('load', () => {
         document.body.classList.add('loaded');
-        
-        // Inicializar funcionalidades que dependem do carregamento completo
-        setTimeout(() => {
-            // Triggers para animações especiais
-            document.dispatchEvent(new CustomEvent('siteReady'));
-        }, 100);
     });
-    
-    // Cleanup em caso de saída da página
-    window.addEventListener('beforeunload', () => {
-        // Pausar animações
-        if (typeof animationId !== 'undefined') {
-            cancelAnimationFrame(animationId);
-        }
-        
-        // Limpar observers
-        // (Os observers serão automaticamente limpos)
-    });
+
+    // ===== CARROSSEL DE EXPERTISE =====
+    // Inicializa o carrossel da seção de expertise com Swiper.js
+    function initializeExpertiseCarousel() {
+        const expertiseCarousel = new Swiper('.expertise-carousel', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 30,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                // Quando a largura da tela for >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30
+                },
+                // Quando a largura da tela for >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
+            }
+        });
+    }
+
+    // ===== CARROSSEL DA GALERIA =====
+    // Inicializa o carrossel da galeria com Swiper.js
+    function initializeGalleryCarousel() {
+        const galleryCarousel = new Swiper('.gallery-carousel', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 30,
+            navigation: {
+                nextEl: '.gallery-carousel .swiper-button-next',
+                prevEl: '.gallery-carousel .swiper-button-prev',
+            },
+            breakpoints: {
+                // Quando a largura da tela for >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30
+                },
+                // Quando a largura da tela for >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
+            }
+        });
+    }
+
+    // ===== CARROSSEL DA GALERIA =====
+    // Inicializa o carrossel da galeria com Swiper.js
+    function initializeGalleryCarousel() {
+        const galleryCarousel = new Swiper('.gallery-carousel', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 30,
+            navigation: {
+                nextEl: '.gallery-carousel .swiper-button-next',
+                prevEl: '.gallery-carousel .swiper-button-prev',
+            },
+            breakpoints: {
+                // Quando a largura da tela for >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30
+                },
+                // Quando a largura da tela for >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
+            }
+        });
+    }
 });
-
-// ===== UTILITÁRIOS GLOBAIS =====
-
-// Função para debounce de eventos
-function debounce(func, wait, immediate) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            timeout = null;
-            if (!immediate) func(...args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func(...args);
-    };
-}
-
-// Função para throttle de eventos
-function throttle(func, limit) {
-    let inThrottle;
-    return function(...args) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-// Detecção de dispositivo
-const deviceInfo = {
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-    isTablet: /iPad|Android(?!.*Mobile)|Kindle/i.test(navigator.userAgent),
-    isDesktop: !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-};
-
-// Adicionar classes CSS baseadas no dispositivo
-document.documentElement.classList.add(
-    deviceInfo.isMobile ? 'is-mobile' : 
-    deviceInfo.isTablet ? 'is-tablet' : 'is-desktop'
-);
-
-// Service Worker para cache (opcional)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
