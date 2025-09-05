@@ -243,6 +243,7 @@ img, video {
     align-items: center;
     min-height: 100vh;
     padding-top: 100px;
+    object-position: center;
     position: relative;
     z-index: 1;
 }
@@ -647,8 +648,8 @@ section {
 }
 
 .events-showcase {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
     margin-top: 3rem;
 }
@@ -679,8 +680,20 @@ section {
     left: 0;
     right: 0;
     background: linear-gradient(transparent, rgba(0,0,0,0.9));
-    padding: 2rem;
+    padding: 1.5rem;
     color: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.event-overlay img {
+    width: 400px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 10rem;
+    border-radius: 10px;
 }
 
 .event-overlay h3 {
@@ -723,8 +736,9 @@ section {
 
 .event-card img {
     width: 100%;
-    height: 120px;
+    height: 280px;
     object-fit: cover;
+    object-position: center top;
 }
 
 .event-content {
@@ -1068,8 +1082,34 @@ button:focus-visible {
     }
     
     .events-showcase {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
+    
+    .events-grid {
+        order: 1;
+    }
+    
+    .event-main {
+        order: -1;
+    }
+    
+    .event-overlay {
+        height: auto !important;
+        justify-content: center !important;
+        padding: 1.5rem !important;
+    }
+    
+    .event-overlay img {
+        width: 150px !important;
+        margin-top: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .event-overlay-content {
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
     
     
     .footer-content {
@@ -1085,7 +1125,7 @@ button:focus-visible {
     .social-links {
         justify-content: flex-start;
     }
-}
+
 
 @media (max-width: 768px) {
     :root {
@@ -1653,6 +1693,104 @@ button:focus-visible {
     .testimonial-card,
     .investment-card {
         padding: 2rem;
+    }
+}
+
+/* === AJUSTES PARA DESKTOP - SEÇÃO EVENTOS === */
+@media (min-width: 1025px) {
+    .events-showcase {
+        flex-direction: column;
+    }
+    
+    .events-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        order: -1;
+        margin-bottom: 3rem;
+    }
+    
+    .event-card {
+        flex: 1;
+        min-height: 350px;
+    }
+    
+    .event-card img {
+        height: 200px;
+        object-position: center 20%;
+    }
+    
+    .event-main {
+        order: 1;
+    }
+    
+    .event-main .event-image {
+        height: 450px;
+        object-position: center 30%;
+    }
+    
+    .event-overlay {
+        padding: 0;
+        background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.95));
+        height: 100%;
+        justify-content: space-between;
+        top: 0;
+    }
+    
+    .event-overlay img {
+        width: 200px;
+        height: auto;
+        margin-top: 2rem;
+        margin-bottom: 0;
+        align-self: center;
+    }
+    
+    .event-overlay-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .event-overlay h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .event-overlay p {
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        opacity: 0.9;
+    }
+    
+    .event-content {
+        padding: 2rem;
+    }
+    
+    .event-content h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .event-content p {
+        font-size: 1rem;
+    }
+}
+
+/* === AJUSTES ESPECÍFICOS PARA TELAS GRANDES === */
+@media (min-width: 1400px) {
+    .event-card img {
+        height: 180px;
+    }
+    
+    .event-main .event-image {
+        height: 500px;
+    }
+    
+    .events-showcase {
+        gap: 3rem;
     }
 }
      
