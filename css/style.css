@@ -761,6 +761,75 @@ section {
     line-height: 1.5;
 }
 
+/* === BOTÃO DE DESCONTO PARA EVENTO === */
+.event-discount-cta {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.discount-card {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+    transition: var(--transition-smooth);
+}
+
+.discount-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4);
+    border-color: var(--accent-purple);
+}
+
+.discount-content h3 {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.discount-content p {
+    color: var(--gray-light);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.discount-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-premium);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.discount-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+    background: linear-gradient(135deg, #9966FF 0%, #FFB800 100%);
+}
+
+.discount-button i {
+    font-size: 1.1rem;
+}
+
 
 
 
